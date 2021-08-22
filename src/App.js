@@ -9,30 +9,25 @@ const tagManagerArgs = {
 TagManager.initialize(tagManagerArgs)
 
 function App() {
-  const [ip, setIp] = useState();
+  const [ipAddress, setIpAddress] = useState();
 
   useEffect(() => {
-    setIp(getGeolocation());
+    const getGeolocation = async () => {
+      const { IPv4 } = await (await fetch('https://geolocation-db.com/json/')).json();
+      setIpAddress(IPv4);
+    }
+    getGeolocation();
   }, []);
-
-  const getGeolocation = async () => {
-    const geolocation = await (await fetch('https://geolocation-db.com/json/')).json();
-    return geolocation;
-  }
-
+  
   return (
-    <>
-      <div>{ip}</div>
-      <Widget 
-        id={process.env.REACT_APP_TYPEFORM_ID}
-        style={{ width: "100%", height: "100vh" }}
-        hidden={{ 
-          portal_id: process.env.REACT_APP_PORTAL_ID,
-          form_guid: process.env.REACT_APP_FORM_GUID,
-          ip_address: ip
-        }}
-      />
-    </>
+    <Widget 
+      id={process.env.REACT_APP_TYPEFORM_ID}
+      style={{ width: "100%", height: "100vh" }}
+      hidden={{ 
+        ip_address: ipAddress,
+        hutk: 321
+      }}
+    />
   );
 }
 
